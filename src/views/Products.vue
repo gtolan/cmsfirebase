@@ -1,6 +1,10 @@
 <template>
-  <div>
+  <main>
     <h1>Products</h1>
+    <div class="links">
+      <router-link to="/products/add-product">Add Product</router-link>|
+      <router-link to="/products/categories">Categories</router-link>
+    </div>
     <router-view />
     <div class="product-list">
       <div class="product-card" v-for="(prod,ind) in products" :key="ind">
@@ -11,7 +15,7 @@
         <h4>Price: {{prod.price | currencyFilter}}</h4>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -50,6 +54,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+main {
+  margin-top: 3rem;
+}
 .product-list {
   display: flex;
   justify-content: flex-start;

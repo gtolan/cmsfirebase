@@ -5,6 +5,7 @@ import articlesModule from './modules/articles';
 import productsModule from './modules/products';
 import authenticationModule from './modules/authentication';
 import messageUsersModule from './modules/messageUsers';
+import componentsModule from './modules/components';
 
 Vue.use(Vuex);
 
@@ -62,6 +63,7 @@ export default new Vuex.Store({
     articles:articlesModule,
     products:productsModule,
     authentication:authenticationModule,
-    messageUsers:messageUsersModule
+    messageUsers:messageUsersModule,
+    components:componentsModule
   }
 });

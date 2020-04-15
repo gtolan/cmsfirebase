@@ -37,19 +37,36 @@ export default {
 
       },
       actions: {
+        async signInWithEmailAndPassword({ dispatch }, user) {
+        await firebase
+        .auth()
+        .signInWithEmailAndPassword(user.email, user.password)
+        .then(firebaseUser => {
+          console.log(firebaseUser.user, "FBU", firebaseUser.user.uid, "UID");
+          return dispatch("login",firebaseUser.user);
+        //  return this.login(firebaseUser.user);
+        })
+        // .then(() => {
+        //   this.$router.push("/game-dashboard");
+        // })
+        // .catch(error => {
+        //   this.errorMsg = error.message;
+        //   console.log(error.message);
+        // });
+    },
         async login({ dispatch }, user) {
             console.log("[STORE ACTIONS] - login", user, "user");
-            const token = await firebase.auth().currentUser.getIdToken(true);
-            const userInfo = {
-              name: user.displayName || 'No Name',
+           const userInfo = {
               email: user.email,
-              // avatar: user.photoURL,
               uid: user.uid
             };
+
+           
+            dispatch("setUSER", userInfo);
+            dispatch("saveUID", userInfo.uid);
+            const token = await firebase.auth().currentUser.getIdToken(true);
             localStorage.setItem('token', token)
-            await dispatch("setTOKEN", token);
-            await dispatch("setUSER", userInfo);
-            await dispatch("saveUID", userInfo.uid);
+            dispatch("setTOKEN", token);
             console.log("[STORE ACTIONS] - in login, response:", status);
           },
 
@@ -88,6 +105,17 @@ export default {
               
       })
     },
+    async logout({ commit }, uid) {
+        console.log("[STORE ACTIONS] - logout", uid, "uid");
+        await firebase.auth().signOut();
+        //Cookies.remove('access_token');
+    
+        let updDocRef = firebase.firestore().collection(`users/`).doc(`${uid}`) 
+        updDocRef.update({online: false});
+        localStorage.removeItem('token')
+        commit("setUSER", null);
+        commit("saveUID", null);
+      },
     async fetchUsers({ commit }){
         console.log("[STORE ACTIONS] - fetchUsers:", );
          await firebase.firestore().collection('users').onSnapshot(docSnapshot => {

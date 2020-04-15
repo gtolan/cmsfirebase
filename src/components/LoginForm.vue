@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <h1>Register</h1>
-    <form @submit.prevent="handleFormSubmit">
+  <div class="tab">
+    <h1>Login</h1>
+    <form @submit.prevent="handleLoginForm">
       <label for="email">Email</label>
-      <input id="email" placeholder="email" v-model="email" type="text" />
-      <label for="displayName">Name</label>
-      <input id="displayName" placeholder="Name" v-model="displayName" type="text" />
+      <input v-model="email" type="email" />
       <label for="password">Password</label>
-      <input id="password" placeholder="Password" v-model="password" type="password" />
-
-      <button type="submit">Submit</button>
+      <input id="password" v-model="password" type="password" />
+      <button type="submit">Login</button>
+      <p>{{errorMsg}}</p>
     </form>
   </div>
 </template>
@@ -17,34 +15,40 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-  name: "Register",
+  name: "LoginForm",
   data() {
     return {
       email: "",
-      displayName: "",
-      password: ""
+      password: "",
+      errorMsg: ""
     };
   },
   methods: {
-    ...mapActions(["authentication/register"]),
-    handleFormSubmit() {
-      let payload = {
+    ...mapActions(["authentication/signInWithEmailAndPassword"]),
+    handleLoginForm() {
+      console.log(this.email, this.password);
+      let pay = {
         email: this.email,
-        password: this.password,
-        displayName: this.displayName,
-        online: true,
-        messages: [null]
+        password: this.password
       };
-      this["authentication/register"](payload).then(() => {
-        console.log("Write succeeded!");
-        this.$router.push("/dashboard");
-      });
+      this["authentication/signInWithEmailAndPassword"](pay)
+        .then(() => {
+          console.log("finished handle Login");
+          this.errorMsg = "You are logged in!";
+        })
+        .catch(err => {
+          console.log(err, err.message);
+          this.errorMsg = err.message;
+        });
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.tab {
+  background-color: whitesmoke;
+}
 h1 {
   position: absolute;
   text-align: center;
@@ -65,7 +69,7 @@ form {
   position: absolute;
   width: calc(100% - 2rem);
   //   &:hover {
-  //     box-shadow: 0px 0px 2px 2px #d3d3d39e;
+  //     // box-shadow: 0px 0px 2px 2px #d3d3d39e;
   //   }
   input,
   label,
@@ -80,7 +84,6 @@ form {
     height: 2.45rem;
     border-radius: 3px;
     font-size: 0.9rem;
-
     color: white;
     text-transform: uppercase;
     letter-spacing: 1px;
