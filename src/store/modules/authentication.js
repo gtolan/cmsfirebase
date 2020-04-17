@@ -6,6 +6,7 @@ export default {
   state: {
     uid:null,
     user:null,
+    loginNavbar:false,
     token: localStorage.getItem('token') || null,
     users:[{uid:'',
             displayName:'',
@@ -31,6 +32,10 @@ export default {
         console.log("[STORE MUTATIONS] - writeUsersList:", users);
         state.users = users;
       },
+      toggleLoginNavbar(state){
+        console.log("[STORE MUTATIONS] - toggleLoginNavbar:");
+        state.loginNavbar = !state.loginNavbar
+      }
 
   },
     getters:{

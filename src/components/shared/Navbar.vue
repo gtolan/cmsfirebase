@@ -6,7 +6,8 @@
         <img :src="logoSrc" alt="advice logo" />
       </div>
     </router-link>
-    <router-link to="/dashboard" title="dashboard">
+
+    <router-link v-if="loginNavbar" to="/dashboard" title="dashboard">
       <span class="sm-screen">
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M0 0h24v24H0V0z" fill="none" />
@@ -16,6 +17,18 @@
         </svg>
       </span>
       <span class="md-screen">Dashboard</span>
+    </router-link>
+
+    <router-link v-if="!loginNavbar" to="/login" title="login">
+      <span class="sm-screen">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path
+            d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"
+          />
+        </svg>
+      </span>
+      <span class="md-screen">Login</span>
     </router-link>
 
     <button class="dropdown" @click="toggleDropdown" title="News Feed">
@@ -84,7 +97,8 @@ export default {
       isOverlayActive: state => state.components.isOverlayActive,
       isOverlaySoft: state => state.components.isOverlaySoft,
       sideNavOpen: state => state.components.sideNavOpen,
-      profileMenuOpen: state => state.components.profileMenuOpen
+      profileMenuOpen: state => state.components.profileMenuOpen,
+      loginNavbar: state => state.authentication.loginNavbar
       //   b: state => state.b
     }),
     isLoggedIn() {

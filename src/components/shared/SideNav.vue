@@ -10,12 +10,13 @@
         <img class="icon" :src="item.icon" />
         <span>{{item.title}}</span>
       </router-link>
+      <button class="toggle-login" @click="toggleLogin">Toggle login</button>
     </div>
   </aside>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "SideNav",
   data() {
@@ -55,7 +56,13 @@ export default {
       //   b: state => state.b
     })
   },
-  methods: {}
+  methods: {
+    ...mapMutations(["authentication/toggleLoginNavbar"]),
+    toggleLogin() {
+      this["authentication/toggleLoginNavbar"]();
+      console.log("authentication/toggleLoginNavbar");
+    }
+  }
 };
 </script>
 
