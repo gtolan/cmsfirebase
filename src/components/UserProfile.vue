@@ -1,24 +1,41 @@
 <template>
-  <div>
-    <h1>User Profile</h1>
-    {{$route.params.uid}}
-    <router-link :to="`/edit-profile/${$route.params.uid}`">Edit Profile</router-link>|
-    <div class="profile-container">
-      <!-- //v-for="(pro,ind) in profile" :key="ind" -->
-      <button @click="handleEditProfile">Edit Profile</button>
-      <div class="left">
-        <h3>Name: {{profile ? profile.displayName : ''}}</h3>
-        <h3>Email: {{profile ? profile.email : ''}}</h3>
-        <h3>Profile Image: {{profile ? profile.displayName : ''}}</h3>
-      </div>
-      <div class="right">
-        <div class="edit" v-if="showEdit">
-          <input type="text" v-model="profileName" placeholder="Name" />
-          <input type="text" v-model="profileEmail" placeholder="Email" />
-          <input type="text" v-model="profileImage" placeholder="Profile Image" />
+  <div class="user">
+    <!-- <h1>User Profile</h1> -->
+    <!-- {{$route.params.uid}} -->
+    <!-- <router-link :to="`/edit-profile/${$route.params.uid}`">Edit Profile</router-link>|
+    -->
+    <section class="profile">
+      <div class="profile-container">
+        <!-- //v-for="(pro,ind) in profile" :key="ind" -->
+
+        <div class="left">
+          <h3>Name: {{profile ? profile.displayName : ''}}</h3>
+          <!-- <h3>Email: {{profile ? profile.email : ''}}</h3> -->
+          <h3>Expertise: {{profile ? profile.displayName : ''}}</h3>
+          <div class="chip-container">
+            <div class="chip">Javascript</div>
+            <div class="chip">Vuejs</div>
+            <div class="chip">Typescript</div>
+          </div>
+          <h3>Rating:</h3>
+          <h3>Questions Answered:</h3>
+          <h3>Online Status: {{profile ? profile.online : ''}}</h3>
+        </div>
+        <div class="right">
+          <div class="image-sample" v-if="!showEdit">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/cms-example-1e6fa.appspot.com/o/smile.jpg?alt=media&token=da6716a0-07a0-420d-b87c-3839489ffc0f"
+            />
+          </div>
+          <div class="edit" v-if="showEdit">
+            <input type="text" v-model="profileName" placeholder="Name" />
+            <input type="text" v-model="profileEmail" placeholder="Email" />
+            <input type="text" v-model="profileImage" placeholder="Profile Image" />
+          </div>
         </div>
       </div>
-    </div>
+    </section>
+    <button class="edit-profile" @click="handleEditProfile">Edit Profile</button>
   </div>
 </template>
 
@@ -58,6 +75,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+div.user {
+  margin-top: 0rem;
+  background-color: whitesmoke;
+  background-color: transparent;
+}
 @keyframes slideInFromRight {
   0% {
     opacity: 0.5;
@@ -68,34 +90,61 @@ export default {
     transform: translateX(0%);
   }
 }
+section.profile {
+  padding-top: 1rem;
+}
 .profile-container {
-  width: 90%;
-  margin: 1rem auto;
-  border: 1px solid gray;
-  padding: 1rem;
-  max-width: 600px;
-  border-radius: 3px;
   display: flex;
-  flex-direction: row;
+  background-color: white;
+  flex-direction: column-reverse;
   overflow: hidden;
   position: relative;
+  border: 1px solid #80808040;
+  border-radius: 3px;
+
+  width: 95%;
+  margin: 2% 2.5%;
+
   button {
     position: absolute;
     width: calc(50% - 0rem);
-    padding: 0;
-    margin-top: -1rem;
-    margin-left: -1rem;
+    margin-top: 0rem;
+    margin-left: 0rem;
     height: 2rem;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s ease-in-out;
+    background-color: #143e8c;
+    color: white;
+    font-size: 0.97rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 0;
   }
   .left {
-    width: 100%;
+    width: calc(100% - 2rem);
+    padding: 1rem;
     h3 {
       text-align: left;
+      font-size: 1rem;
     }
   }
   .right {
-    width: 100%;
+    width: calc(100% - 2rem);
+    padding: 1rem;
     overflow: hidden;
+    .image-sample {
+      max-height: 250px;
+      position: relative;
+      display: flex;
+      max-height: 300px;
+      img {
+        width: 100%;
+        object-fit: cover;
+
+        // margin-top: calc(-200px + 50%);
+      }
+    }
     .edit {
       display: flex;
       flex-direction: column;
@@ -113,6 +162,63 @@ export default {
         outline: none;
       }
     }
+  }
+}
+@media only screen and (min-width: 500px) {
+  .profile-container {
+    flex-direction: row;
+    width: 90%;
+    margin: 2% 5%;
+
+    .right {
+      width: 100%;
+      .image-sample {
+        max-height: 300px;
+      }
+    }
+    .left {
+      width: 100%;
+    }
+  }
+}
+
+@media only screen and (min-width: 700px) {
+  .profile-container {
+    // flex-direction: row;
+    // width: 90%;
+    // margin: 2% 5%;
+    flex-direction: row;
+
+    //   width: 100%;
+    .right {
+      .image-sample {
+        max-height: 250px;
+      }
+    }
+  }
+}
+
+button.edit-profile {
+  height: 2rem;
+  border-radius: 30px;
+  min-width: 200px;
+  font-size: 0.97rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  outline: none;
+}
+.chip-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .chip {
+    width: auto;
+    border: 1px solid grey;
+    border-radius: 30px;
+    margin-right: auto;
+    margin-top: 3px;
+    padding: 0px 12px;
+    margin-bottom: 3px;
   }
 }
 </style>

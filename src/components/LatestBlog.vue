@@ -1,11 +1,20 @@
 <template>
-  <div>
-    <h1>Latest Blog</h1>
+  <div class="latest-news">
+    <BlogArticleList />
   </div>
 </template>
 
 <script>
+import BlogArticleList from "@/components/BlogArticleList.vue";
 export default {
-  name: "LatestBlog"
+  name: "LatestBlog",
+  components: {
+    BlogArticleList
+  }
 };
 </script>
+<style lang="scss">
+.latest-news {
+  margin-top: 3rem;
+}
+</style>

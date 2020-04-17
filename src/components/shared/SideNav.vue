@@ -1,10 +1,15 @@
 <template>
   <aside class="sidenav" :class="{'show': isOpen}" id="sideNavigation">
     <div class="link-container">
-      <button v-for="(item, index) in sideNavLocations" :key="`${item.link}-${index}`">
+      <router-link
+        class="router-btn"
+        :to="item.link"
+        v-for="(item, index) in sideNavLocations"
+        :key="`${item.link}-${index}`"
+      >
         <img class="icon" :src="item.icon" />
         <span>{{item.title}}</span>
-      </button>
+      </router-link>
     </div>
   </aside>
 </template>
@@ -49,7 +54,8 @@ export default {
       isOpen: state => state.components.sideNavOpen
       //   b: state => state.b
     })
-  }
+  },
+  methods: {}
 };
 </script>
 
@@ -77,7 +83,7 @@ aside {
   padding-top: 0rem;
   transition: 0.3s ease-in-out;
   transform: translateX(-100%);
-  border: 1px solid #dadce0;
+  border: none;
   //   border-radius: 8px;
   &.show {
     transform: translateX(0%);
@@ -87,7 +93,7 @@ aside {
     height: 100%;
     width: 100%;
   }
-  button {
+  .router-btn {
     height: 3.5rem;
     outline: none;
     background-color: transparent;
@@ -100,11 +106,12 @@ aside {
     align-items: center;
     cursor: pointer;
     border: none;
-    width: 90%;
-    border-top-right-radius: 12rem;
-    border-bottom-right-radius: 12rem;
+    width: 100%;
+    color: black;
+    text-decoration: none;
+
     &:hover {
-      background: linear-gradient(82deg, white, #7d1675);
+      background: linear-gradient(82deg, white, #143e8c);
       background-size: 200% 200%;
       animation: fillBackground 0.5s ease-in-out;
       animation-iteration-count: 1;
@@ -118,11 +125,20 @@ aside {
     }
     span {
       height: 100%;
-      display: inline-block;
       width: 100%;
       text-align: left;
+      display: flex;
+      justify-content: center;
+      align-content: center;
       padding-left: 10px;
+      flex-direction: column;
+      vertical-align: middle;
     }
+  }
+}
+@media only screen and (min-width: 700px) {
+  aside {
+    top: 4rem;
   }
 }
 </style>

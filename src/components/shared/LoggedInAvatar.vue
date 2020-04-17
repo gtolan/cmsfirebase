@@ -1,11 +1,18 @@
 <template>
-  <button class="avatar" @click="handleToggleProfileMenu">
+  <button title="Profile menu" class="avatar" @click="handleToggleProfileMenu">
     <div class="img-container">
       <img
         src="https://firebasestorage.googleapis.com/v0/b/cms-example-1e6fa.appspot.com/o/smile.jpg?alt=media&token=da6716a0-07a0-420d-b87c-3839489ffc0f"
       />
       <div class="profile-menu" :class="{'active':isActive}">
-        <h1>Profile Menu</h1>
+        <button>My Profile</button>
+        <button>Edit Profile</button>
+        <button>Contacts</button>
+        <button>Messages</button>
+        <button>News Feed</button>
+        <button>Get Advice</button>
+        <button>Share Advice</button>
+        <button>Give Advice</button>
       </div>
     </div>
   </button>
@@ -18,7 +25,11 @@ export default {
   name: "LoggedInAvatar",
   computed: {
     ...mapState({
-      isActive: state => state.components.profileMenuOpen
+      isActive: state => state.components.profileMenuOpen,
+      isOverlayActive: state => state.components.isOverlayActive,
+      isOverlaySoft: state => state.components.isOverlaySoft,
+      sideNavOpen: state => state.components.sideNavOpen,
+      blogMenuOpen: state => state.components.blogMenuOpen
       //   b: state => state.b
     })
     // isActive2() {
@@ -32,16 +43,42 @@ export default {
   //   },
   methods: {
     ...mapMutations([
-      "components/toggleProfileMenu" // map `this.fetchCurrentTrains()` to `this.$store.dispatch('fetchCurrentTrains')`
+      "components/toggleProfileMenu",
+      "components/addSoftOverlay",
+      "components/toggleOverlayOpen",
+      "components/removeSoftOverlay" // map `this.fetchCurrentTrains()` to `this.$store.dispatch('fetchCurrentTrains')`
     ]),
-    // handleToggleProfileMenu() {
-    //   console.log("hanldeToggleProfileMenu");
-    //   if (!this.isActive) return;
-    //   this.isActive = !this.isActive;
-    //   this["components/toggleProfileMenu"]();
-    // },
+    handleOverlayOpen() {
+      console.log("handle open", this.isOverlayActive);
+      if (!this.isOverlayActive) {
+        console.log("handle open soft over");
+        this["components/toggleOverlayOpen"]();
+      }
+      this["components/addSoftOverlay"]();
+    },
+    handleOverlayClose() {
+      if (this.isOverlayActive) {
+        console.log("HOC,BTP", this.blogMenuOpen, this.sideNavOpen);
+        if (this.blogMenuOpen || this.sideNavOpen) {
+          console.log("add sof");
+          this["components/addSoftOverlay"]();
+          //   this["components/toggleOverlayOpen"]();
+        } else {
+          console.log("remov all sof");
+          this["components/toggleOverlayOpen"]();
+          this["components/removeSoftOverlay"]();
+        }
+        console.log("handle close over");
+      }
+    },
+
     handleToggleProfileMenu() {
-      this.isActive = !this.isActive;
+      //   this.isActive = !this.isActive;
+
+      this.isOverlayActive
+        ? this.handleOverlayClose()
+        : this.handleOverlayOpen();
+
       this["components/toggleProfileMenu"]();
     }
   }
@@ -58,6 +95,7 @@ button.avatar {
   cursor: pointer;
   outline: none;
   border: none;
+  margin-left: 1rem;
   .img-container {
     width: 36px;
     // overflow: hidden;
@@ -87,15 +125,26 @@ button.avatar {
       box-shadow: 0px 0px 3px 2px #8080808f;
       transform-origin: right top;
       transition: 0.3s ease-in-out;
-      h1 {
-        text-align: left;
-        padding-left: 1rem;
+      display: flex;
+      flex-direction: column;
+      button {
+        height: 2rem;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid lightgray;
+        font-size: 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
+        &:hover {
+          background: #b3aeae3b;
+        }
       }
 
       &.active {
         transform: scale(1);
         visibility: visible;
-        min-height: 300px;
+        min-height: 275px;
         border-top-left-radius: 8px;
         border-bottom-left-radius: 8px;
         overflow: hidden;
@@ -103,6 +152,12 @@ button.avatar {
         border: 1px solid lightgray;
       }
     }
+  }
+}
+
+@media only screen and (min-width: 700px) {
+  .profile-menu {
+    top: 3.24rem !important;
   }
 }
 </style>

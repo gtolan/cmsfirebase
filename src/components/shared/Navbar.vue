@@ -1,27 +1,61 @@
 <template>
   <nav id="nav">
     <Hamburger />
-    <router-link to="/">Home</router-link>
-    <router-link to="/dashboard">Dashboard</router-link>
+    <router-link to="/" title="home">
+      <div class="logo">
+        <img :src="logoSrc" alt="advice logo" />
+      </div>
+    </router-link>
+    <router-link to="/dashboard" title="dashboard">
+      <span class="sm-screen">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path
+            d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"
+          />
+        </svg>
+      </span>
+      <span class="md-screen">Dashboard</span>
+    </router-link>
 
-    <button class="dropdown" @click="toggleDropdown">
+    <button class="dropdown" @click="toggleDropdown" title="News Feed">
       <div class="header">
-        Blog
-        <button class="collapse" :class="{'active':this.blogMenuOpen}">
+        <span class="sm-screen">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+            <path d="M0 0h24v24H0V0z" fill="none" />
             <path
-              d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41L10.7 17.3c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"
+              d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm1 14H8c-.55 0-1-.45-1-1s.45-1 1-1h5c.55 0 1 .45 1 1s-.45 1-1 1zm3-4H8c-.55 0-1-.45-1-1s.45-1 1-1h8c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H8c-.55 0-1-.45-1-1s.45-1 1-1h8c.55 0 1 .45 1 1s-.45 1-1 1z"
             />
           </svg>
+        </span>
+        <span class="md-screen">News</span>
+        <button class="collapse" :class="{'active':this.blogMenuOpen}">
+          <span class="md-screen">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path
+                d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41L10.7 17.3c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"
+              />
+            </svg>
+          </span>
         </button>
       </div>
       <div class="menu" :class="{'active':blogMenuOpen}">
-        <router-link class="menu-item" to="/blog">Blog</router-link>
-        <router-link class="menu-item" to="/add-blog-article">Add Blog Article</router-link>
+        <router-link title="News Feed" class="menu-item" to="/blog">News Feed</router-link>
+        <router-link title="Share an Article" class="menu-item" to="/add-blog-article">Share Advice</router-link>
       </div>
     </button>
 
-    <router-link to="/products">Products</router-link>
+    <router-link to="/products" title="Sell your Advice">
+      <span class="sm-screen">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path
+            d="M12 17.27l5.17 3.12c.38.23.85-.11.75-.54l-1.37-5.88 4.56-3.95c.33-.29.16-.84-.29-.88l-6.01-.51-2.35-5.54c-.17-.41-.75-.41-.92 0L9.19 8.63l-6.01.51c-.44.04-.62.59-.28.88l4.56 3.95-1.37 5.88c-.1.43.37.77.75.54L12 17.27z"
+          />
+        </svg>
+      </span>
+      <span class="md-screen">Experts</span>
+    </router-link>
     <LoggedInAvatar />
     <!-- <p>Logged In:{{isLoggedIn}}</p> -->
   </nav>
@@ -39,13 +73,18 @@ export default {
   },
   data() {
     return {
+      logoSrc: require("../../assets/advicelogo.png")
       //   blogMenuOpen: false
     };
   },
   computed: {
     ...mapState({
       token: state => state.authentication.token,
-      blogMenuOpen: state => state.components.blogMenuOpen
+      blogMenuOpen: state => state.components.blogMenuOpen,
+      isOverlayActive: state => state.components.isOverlayActive,
+      isOverlaySoft: state => state.components.isOverlaySoft,
+      sideNavOpen: state => state.components.sideNavOpen,
+      profileMenuOpen: state => state.components.profileMenuOpen
       //   b: state => state.b
     }),
     isLoggedIn() {
@@ -53,10 +92,42 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["components/toggleBlogMenuOpen"]),
+    ...mapMutations([
+      "components/toggleBlogMenuOpen",
+      "components/toggleOverlayOpen",
+      "components/addSoftOverlay",
+      "components/removeSoftOverlay"
+    ]),
+    handleOverlayOpen() {
+      console.log("handle open", this.isOverlayActive);
+      if (!this.isOverlayActive) {
+        console.log("handle open soft over");
+        this["components/toggleOverlayOpen"]();
+      }
+      this["components/addSoftOverlay"]();
+    },
+    handleOverlayClose() {
+      if (this.isOverlayActive) {
+        console.log("HOC BTD", this.sideNavOpen, this.profileMenuOpen);
+        if (this.sideNavOpen || this.profileMenuOpen) {
+          this["components/addSoftOverlay"]();
+        } else {
+          console.log("add sof");
+          this["components/toggleOverlayOpen"]();
+          //   this["components/toggleOverlayOpen"]();
+          this["components/removeSoftOverlay"]();
+        }
+        console.log("handle close over");
+      }
+    },
+
     toggleDropdown() {
-      console.log("toggle", this.blogMenuOpen);
+      console.log("toggle", this.blogMenuOpen, "OA", this.isOverlayActive);
       //   this.blogMenuOpen = !this.blogMenuOpen;
+
+      this.isOverlayActive
+        ? this.handleOverlayClose()
+        : this.handleOverlayOpen();
       this["components/toggleBlogMenuOpen"]();
     }
   }
@@ -77,7 +148,8 @@ nav#nav {
   position: fixed;
   width: 100vw;
   top: 0;
-
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
+    0 3px 1px -2px rgba(0, 0, 0, 0.2);
   a,
   button.dropdown, //:not(.hamburger)
   p {
@@ -107,6 +179,33 @@ nav#nav {
       }
     }
   }
+  a {
+    span.sm-screen {
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      flex-direction: column;
+      height: 100%;
+      align-items: center;
+      svg {
+        fill: white;
+      }
+    }
+  }
+  button div {
+    span.sm-screen {
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      flex-direction: column;
+      height: 100%;
+      align-items: center;
+      svg {
+        margin-top: 3px;
+        fill: white;
+      }
+    }
+  }
 }
 
 // Extract to Dropdown Component
@@ -119,8 +218,10 @@ button.dropdown {
     align-content: center;
     flex-direction: column;
     min-width: calc((100vw - 5rem) / 5);
+
     position: relative;
     font-size: 0.97rem;
+    margin-top: -2px;
 
     button.collapse {
       position: absolute;
@@ -141,16 +242,19 @@ button.dropdown {
       height: 100%;
       top: 0;
       background-color: transparent;
-      height: 35px;
-      width: 35px;
+      height: 33px;
+      width: 33px;
       border: none;
-      margin-top: 7px;
+      margin-top: 8px;
       margin-right: 10px;
+
       svg {
         transform: rotate(90deg);
         transition: 0.3s ease-in-out;
         height: 35px;
         width: 35px;
+        margin-top: 8px;
+        margin-right: 0px;
         fill: white;
       }
       &.active {
@@ -176,6 +280,7 @@ button.dropdown {
   background: #143e8c;
   width: auto;
   min-width: calc((100vw - 1rem) / 5);
+  min-width: 123px;
   // min-width: calc((100vw - 1rem) / 5);
   max-width: calc((100vw - 1rem) / 3);
   width: 100%;
@@ -189,12 +294,15 @@ button.dropdown {
   transition: 1s;
   background-color: white;
   color: black;
+
   border: 1px solid lightgray;
   box-shadow: 0px 0px 3px 2px #8080808f;
   border-radius: 3px;
-  margin-top: 3px;
+  border-top-left-radius: 0;
+  margin-top: 2px;
   padding: 0;
   overflow: hidden;
+  padding-bottom: 10px;
   transform-origin: left top;
 
   &.active {
@@ -211,11 +319,66 @@ button.dropdown {
     background-color: white !important;
     padding-left: 10px !important;
     font-size: 1rem;
-    border-top: 1px solid #80808033 !important;
-    width: calc(100% - 11px) !important;
+    border-bottom: 1px solid #80808033 !important;
+
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid lightgray;
+    font-size: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+
+    font-weight: 400 !important;
+    padding-left: 0 !important;
     &:hover {
       background: whitesmoke !important;
     }
+  }
+}
+.logo {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  img {
+    width: 73px;
+    margin-top: 0px;
+    margin: auto;
+  }
+}
+
+.sm-screen {
+  display: block;
+}
+
+.md-screen {
+  display: none;
+}
+
+@media only screen and (min-width: 700px) {
+  .sm-screen {
+    display: none !important;
+  }
+
+  .md-screen {
+    display: block;
+  }
+  nav#nav {
+    height: 4rem;
+  }
+  .logo {
+    img {
+      width: 97px;
+    }
+  }
+  button.dropdown {
+    .header {
+      min-width: calc((100vw - 0rem) / 5);
+    }
+  }
+  .menu {
+    top: 4rem;
   }
 }
 </style>

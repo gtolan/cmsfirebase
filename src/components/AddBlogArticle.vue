@@ -1,12 +1,29 @@
 <template>
-  <div>
-    <h1>Add Blog Article</h1>
-    <form @submit.prevent="handleFormSubmit">
-      <div>
-        <p>Upload an image to Firebase:</p>
-        <input class="file-upload" type="file" @change="previewImage" />
+  <main>
+    <h1 class="title">Share some Advice</h1>
+    <form @submit.prevent="handleFormSubmit" v-if="!hideForm">
+      <div class="upload-image">
+        <!-- <p v-if="!image">Upload an image:</p> -->
+        <div v-if="!image" class="upload-btn">
+          Choose an Image
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+          >
+            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path
+              d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.9 13.98l2.1 2.53 3.1-3.99c.2-.26.6-.26.8.01l3.51 4.68c.25.33.01.8-.4.8H6.02c-.42 0-.65-.48-.39-.81L8.12 14c.19-.26.57-.27.78-.02z"
+            />
+          </svg>
+          <input class="file-upload" type="file" @change="previewImage" />
+        </div>
+        <img class="sample-upload" :src="image" />
       </div>
-      <div v-if="showUploadBtn">
+
+      <!-- TODO: Or show a link text field -->
+      <div v-if="showUploadBtn && uploadComplete == false">
         <p>
           Progress: {{uploadValue.toFixed()+"%"}}
           <progress
@@ -16,39 +33,58 @@
           ></progress>
         </p>
       </div>
-      <div v-if="imageData!=null">
-        <img class="preview" :src="picture" />
-        <br />
+      <div v-if="imageData!=null && uploadComplete == false">
         <button @click="onUpload" :disabled="disableUpload">Upload</button>
       </div>
-      <input placeholder="date" v-model="date" type="text" />
+      <h4 v-if="uploadComplete == true" class="complete">Upload Complete!</h4>
+      <input type="date" placeholder="01-03-2020" v-model="date" />
       <input placeholder="title" v-model="title" type="text" />
       <input placeholder="summary" v-model="summary" type="text" />
-      <textarea placeholder="content" v-model="content" type="text" />
-      <button>Sumit</button>
+      <textarea rows="6" placeholder="content" v-model="content" type="text" />
+      <button>
+        Submit
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path
+            d="M3.4 20.4l17.45-7.48c.81-.35.81-1.49 0-1.84L3.4 3.6c-.66-.29-1.39.2-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"
+          />
+        </svg>
+      </button>
     </form>
+    <div class="success-container" v-if="hideForm">
+      <h1>Thank you for contributing!</h1>
+      <h4>Your article has been shared!</h4>
+      <p>Your help build community knowledge</p>
+      <button class="reset">Wrtie another Article</button>
+    </div>
+
     <section class="article-container">
-      <article class="blog" v-for="(art,ind) in collection2" :key="ind">
+      <BlogArticleList />
+      <!-- <article class="blog" v-for="(art,ind) in collection2" :key="ind">
         <h2>Title:{{art.title}}</h2>
         <h2>Summary:{{art.summary}}</h2>
         <h2>Content:{{art.content}}</h2>
-      </article>
+      </article>-->
     </section>
-  </div>
+  </main>
 </template>
 
 <script>
 import firebase from "firebase";
+import BlogArticleList from "@/components/BlogArticleList.vue";
 import { mapActions, mapState } from "vuex";
 export default {
   name: "AddBlogArticle",
+  components: {
+    BlogArticleList
+  },
   data() {
     return {
       title: "",
       summary: "",
       content: "",
       date: "",
-      image: "",
+
       imageType: "",
       imageAddress: "",
       imageData: null,
@@ -56,7 +92,10 @@ export default {
       uploadValue: 0,
       collection: {},
       disableUpload: false,
-      showUploadBtn: false
+      showUploadBtn: false,
+      uploadComplete: false,
+      hideForm: false,
+      image: ""
     };
   },
   //   watch: {
@@ -79,7 +118,10 @@ export default {
         date: this.date,
         content: this.content
       };
-      this["articles/writeNewArticle"](pay);
+      this["articles/writeNewArticle"](pay).then(() => {
+        console.log("success message and reset form");
+        this.hideForm = true;
+      });
     },
 
     previewImage(event) {
@@ -87,6 +129,7 @@ export default {
       this.picture = null;
       this.imageData = event.target.files[0];
       this.showUploadBtn = true;
+      this.onFileChange(event);
     },
 
     onUpload() {
@@ -110,9 +153,29 @@ export default {
           storageRef.snapshot.ref.getDownloadURL().then(url => {
             this.picture = url;
             console.log(url, "firebase upload url");
+            this.uploadComplete = true;
           });
         }
       );
+    },
+    onFileChange(e) {
+      console.log("create image");
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      //var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = e => {
+        vm.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage() {
+      this.image = "";
     },
     async fetchArticlesInit() {
       console.log("[in coponentsABA] - fetchArticles:");
@@ -166,21 +229,48 @@ img.preview {
 form {
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 95%;
   margin: auto;
   max-width: 500px;
   box-shadow: 0px 0px 3px 2px #8080808f;
   border-radius: 8px;
+  margin-bottom: 2rem;
+  background-color: white;
   input:not(.file-upload),
   textarea,
   button {
     min-height: 2rem;
     margin: 10px;
-    border-radius: 3px;
-    border: 1px solid;
+    border-radius: 30px;
+    border-radius: 8px;
+    border: 1px solid gray;
+    outline: none;
+    cursor: pointer;
+    font-size: 1rem;
   }
   button {
-    height: 2rem;
+    width: calc(100% - 1rem);
+    height: 2.5rem;
+    margin: 0.5rem;
+    margin-top: auto;
+    text-transform: uppercase;
+    font-size: 1rem;
+    background-color: #143e8c;
+    transition: 0.3s ease-in-out;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 30px;
+    &:hover {
+      background-color: #235cc5;
+    }
+    svg {
+      position: absolute;
+      fill: white;
+      margin-left: 15px;
+      margin-top: -2px;
+    }
   }
 
   input,
@@ -205,6 +295,14 @@ section.article-container {
   }
 }
 
+@media only screen and (min-width: 500px) {
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+  }
+}
+
 @media only screen and (min-width: 900px) {
   section.article-container {
     padding: 5%;
@@ -212,6 +310,116 @@ section.article-container {
       min-width: 45%;
       margin: 2% 2.5%;
     }
+  }
+}
+.file-upload {
+  // visibility: hidden;
+}
+main {
+  margin-top: -1rem;
+  background-color: whitesmoke;
+  padding-top: 1rem;
+  h1.title {
+    margin-top: 4rem;
+  }
+  h4.subtitle {
+    padding: 0rem 2rem 1rem;
+  }
+}
+
+@media only screen and (min-width: 700px) {
+  main {
+    h1.title {
+      margin-top: 5rem;
+    }
+  }
+}
+.upload-image {
+  width: 100%;
+  min-height: 200px;
+  max-height: 275px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  background-color: lightgrey;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  position: relative;
+  overflow: hidden;
+  img.sample-upload {
+    width: 100%;
+    position: absolute;
+  }
+  div.upload-btn {
+    width: 300px;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    position: relative;
+    height: 2.5rem;
+    margin: 0.5rem auto;
+    // margin-top: auto;
+    text-transform: uppercase;
+    font-size: 1rem;
+    background-color: #143e8c;
+    transition: 0.3s ease-in-out;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    svg {
+      position: absolute;
+      right: 15px;
+      fill: white;
+    }
+    input {
+      height: 100%;
+      padding-left: 0;
+      resize: none;
+      color: transparent;
+      opacity: 0;
+      cursor: pointer;
+      position: absolute;
+      left: 0;
+      width: 100%;
+    }
+  }
+}
+
+div.success-container {
+  width: 90%;
+  max-width: 600px;
+  margin: auto;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 3px;
+  border: 1px solid #80808040;
+  margin-bottom: 3rem;
+
+  h1 {
+    color: green;
+  }
+  button {
+    width: calc(100% - 1rem);
+    height: 2.5rem;
+    margin: 0.5rem;
+    margin-top: auto;
+    text-transform: uppercase;
+    font-size: 1rem;
+    background-color: #143e8c;
+    transition: 0.3s ease-in-out;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 30px;
+    max-width: 400px;
   }
 }
 </style>

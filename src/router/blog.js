@@ -1,4 +1,10 @@
 // import Blog from "../views/Blog.vue";
+// let articleDec = (route) =>{
+//     decodeURIComponent(route);
+// }
+
+
+
 export default  [{
     path: "/blog/",
     name: "Blog",
@@ -8,7 +14,7 @@ export default  [{
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/Blog.vue")
   },{
-    path: "/blog/:articleName",
+    path: `/blog/:articleName`,
     name: "BlogArticle",
     params:'articleName',
     // route level code-splitting

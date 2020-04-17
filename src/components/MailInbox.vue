@@ -155,6 +155,7 @@ export default {
 
 <style lang="scss" scoped>
 .dash-mail {
+  margin-top: 3rem;
   background-color: #eeeeee;
   min-height: 100vh;
   padding-bottom: 3rem;

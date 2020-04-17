@@ -14,23 +14,59 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "Hamburger",
   data() {
     return {};
   },
   computed: {
-    isActive() {
-      return this.$store.getters["components/sideNavOpen"];
-    }
+    ...mapState({
+      isOverlayActive: state => state.components.isOverlayActive,
+      isOverlaySoft: state => state.components.isOverlaySoft,
+      isActive: state => state.components.sideNavOpen,
+      blogMenuOpen: state => state.components.blogMenuOpen,
+      profileMenuOpen: state => state.components.profileMenuOpen
+      //   b: state => state.b
+    })
   },
   methods: {
     ...mapMutations([
-      "components/toggleSideNavOpen" // map `this.fetchCurrentTrains()` to `this.$store.dispatch('fetchCurrentTrains')`
+      "components/toggleSideNavOpen",
+      "components/toggleOverlayOpen",
+      "components/removeSoftOverlay",
+      "components/addSoftOverlay" // map `this.fetchCurrentTrains()` to `this.$store.dispatch('fetchCurrentTrains')`
     ]),
+
+    handleOverlayOpen() {
+      console.log("handle open", this.isOverlayActive);
+      if (!this.isOverlayActive) {
+        console.log("handle open soft over");
+        this["components/toggleOverlayOpen"]();
+      }
+      this["components/addSoftOverlay"]();
+    },
+    handleOverlayClose() {
+      if (this.isOverlayActive) {
+        console.log(this.blogMenuOpen, this.profileMenuOpen);
+        if (this.blogMenuOpen || this.profileMenuOpen) {
+          //   this["components/toggleOverlayOpen"]();
+          this["components/addSoftOverlay"]();
+        } else {
+          console.log("remove sof");
+          this["components/toggleOverlayOpen"]();
+          this["components/removeSoftOverlay"]();
+        }
+        console.log("handle close over");
+      }
+    },
     toggleHamburger() {
-      this.isActive = !this.isActive;
+      //   this.isActive = !this.isActive;
+
+      console.log("af", this.isOverlayActive);
+      this.isOverlayActive
+        ? this.handleOverlayClose()
+        : this.handleOverlayOpen();
       this["components/toggleSideNavOpen"]();
     }
   }
@@ -46,22 +82,19 @@ button.hamburger {
   outline: none;
   height: 100%;
   padding: 0rem;
-  transform: scale(1);
+  //   transform: scale(1);
+  transform: scale(0.7);
   transform-origin: center;
   padding: 0;
   display: flex;
   width: 3rem;
-  height: 100%;
-  justify-content: center;
-  align-content: center;
-  min-width: 5rem;
   flex-direction: row;
-  min-width: 5rem;
+  min-width: 3rem;
   height: 100%;
   display: flex;
   justify-content: center;
   align-content: center;
-  width: 100%;
+  width: 6rem;
   flex-direction: row;
 
   .hamburger-box {
@@ -180,5 +213,11 @@ button.hamburger {
   transform: rotate(-90deg);
   transition: top 0.1s 0.16s cubic-bezier(0.33333, 0, 0.66667, 0.33333),
     transform 0.13s 0.25s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+@media only screen and (min-width: 700px) {
+  button.hamburger {
+    min-width: 5rem;
+    transform: scale(1);
+  }
 }
 </style>
