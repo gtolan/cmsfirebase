@@ -4,40 +4,30 @@
       <h1>Sometimes we need just a little advice</h1>
       <div class="video-overlay"></div>
       <video autoplay muted loop>
-        <source :src="require('../assets/clouds.mp4')" type="video/mp4" />
+        <!-- <source :src="video" type="video/mp4" /> -->
       </video>
     </div>
   </main>
 </template>
 
 <script>
-// @ is an alias to /src
-
 export default {
   name: "Home",
-  components: {},
   data() {
     return {
       isMounted: false
+      //video: require("../assets/clouds.mp4")
     };
   },
   mounted() {
     this.isMounted = true;
-  },
-  methods: {}
+  }
 };
 </script>
+
+
+
 <style lang="scss" scoped>
-.home {
-  img {
-    width: 60px;
-  }
-}
-</style>
-<style lang="scss" scoped>
-main {
-  margin-top: 3rem;
-}
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -46,6 +36,14 @@ main {
     opacity: 1;
   }
 }
+
+main.home {
+  margin-top: 3rem;
+  img {
+    width: 60px;
+  }
+}
+
 .video-container {
   opacity: 0;
   animation: fadeIn 0.6s ease-in-out;

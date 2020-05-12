@@ -37,25 +37,16 @@
       </router-link>
     </div>
     <router-view />
-    <!-- <div class="product-list">
-      <div class="product-card" v-for="(prod,ind) in products" :key="ind">
-        <img class="prod-image" :src="prod.imageURL" />
-        <h4>{{prod.title}}</h4>
-        <div class="chip-category">{{prod.category}}</div>
-        <h4>{{prod.description}}</h4>
-        <h4>{{prod.price | currencyFilter}} / per 5 questions</h4>
-      </div>
-    </div>-->
-    <!-- @click="handleOpenArticle(art)" -->
+
     <section class="product-list">
       <article class="product-card" v-for="(prod,ind) in products" :key="ind">
         <div class="container one">
           <h4 class="title">{{prod.title}}</h4>
-          <div class="chip">{{prod.category}}</div>
-          <h4 class="summary">{{prod.description}}</h4>
-          <h4>{{prod.price | currencyFilter}} / per 5 questions</h4>
+          <div class="category-chip-product">{{prod.category}}</div>
+          <h4 class="description">{{prod.description}}</h4>
+          <h4 class="product-price">{{prod.price | currencyFilter}} / per 5 questions</h4>
           <!-- <h2 class="content" v-html="art.content"></h2> -->
-          <button class="read-more" @click="handleReadAritlce(art)">
+          <button class="read-more" @click="handleReadAritlce(prod)">
             Ask a Question
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -296,7 +287,7 @@ section.product-list {
         h4.title {
           font-size: 1.3rem;
         }
-        h4.summary {
+        h4.description {
           font-size: 1rem;
           display: -webkit-box;
           -webkit-line-clamp: 3;
@@ -412,7 +403,7 @@ section.product-list {
   }
 }
 
-.chip {
+.category-chip-product {
   text-align: left;
   margin-left: 0.5rem;
   border: 1px solid gray;

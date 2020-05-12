@@ -1,0 +1,48 @@
+// https://docs.cypress.io/api/introduction/api.html
+//Attributes
+    //cy.get('form.login-form input[type="password"]').should('have.attr', 'value', '123456')
+    //cy.get('form.login-form input[type="password"]').invoke('attr', 'value', '123456')
+    //.should('have.attr', 'value', '123456')  
+    //cy.url().should('include', '/login') 
+
+
+//Fill in form test credentials
+const loginUser = () =>{
+      cy.get('form.login-form input[type="email"]').type('tolangerard@gmail.com')
+      cy.get('form.login-form input[type="password"]').type('123456{enter}');
+}
+
+
+describe("My First Test", () => {
+  it("Visits the app root url", () => {
+    cy.visit("/");
+    cy.contains("h1", "Sometimes we need just a little advice");
+  })
+  it("Visits the login page", () => {
+    //cy.get('nav').find('>a:nth-child(3)').trigger('click');  
+    //OR test using data-cy attr if native/css selector too many queries
+    cy.get('nav').find('[data-cy=login]').trigger('click'); 
+    cy.url().should('include', '/login') 
+  });
+  it("logs in the test user", () => {
+    
+    loginUser()   
+  });
+
+
+  it("shows the user profile", () => {
+    //cy.visit('/dashboard')
+    cy.location().should((loc) => {
+      expect(loc.origin).to.eq('http://localhost:8080')
+      expect(loc.pathname).to.eq('/dashboard')
+    })
+  });
+  it("should have a list of contacts", () => {
+    //cy.visit('/dashboard')
+    cy.get('#contactCon').children().should('have.length', 3)
+  });
+  it("should have a list of articles", () => {
+    //cy.visit('/dashboard')
+    cy.get('.article-container').children().should('have.length', 7)
+  });
+});

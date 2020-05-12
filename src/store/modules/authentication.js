@@ -6,6 +6,7 @@ export default {
   state: {
     uid:null,
     user:null,
+    usersList:null,
     loginNavbar:false,
     token: localStorage.getItem('token') || null,
     users:[{uid:'',
@@ -31,10 +32,15 @@ export default {
       writeUsersList(state, users){
         console.log("[STORE MUTATIONS] - writeUsersList:", users);
         state.users = users;
+        state.usersList = users; //For sorting
       },
       toggleLoginNavbar(state){
         console.log("[STORE MUTATIONS] - toggleLoginNavbar:");
         state.loginNavbar = !state.loginNavbar
+      },
+      updateUserList(state, payload){
+        console.log("[STORE MUTATIONS] - filterUserList:");
+        state.usersList = payload;
       }
 
   },
@@ -42,6 +48,7 @@ export default {
 
       },
       actions: {
+
         async signInWithEmailAndPassword({ dispatch }, user) {
         await firebase
         .auth()
@@ -59,7 +66,7 @@ export default {
         //   console.log(error.message);
         // });
     },
-        async login({ dispatch }, user) {
+        async login({ commit }, user) {
             console.log("[STORE ACTIONS] - login", user, "user");
            const userInfo = {
               email: user.email,
@@ -67,11 +74,11 @@ export default {
             };
 
            
-            dispatch("setUSER", userInfo);
-            dispatch("saveUID", userInfo.uid);
+            commit("setUSER", userInfo);
+            commit("saveUID", userInfo.uid);
             const token = await firebase.auth().currentUser.getIdToken(true);
             localStorage.setItem('token', token)
-            dispatch("setTOKEN", token);
+            commit("setTOKEN", token);
             console.log("[STORE ACTIONS] - in login, response:", status);
           },
 
@@ -121,8 +128,11 @@ export default {
         commit("setUSER", null);
         commit("saveUID", null);
       },
-    async fetchUsers({ commit }){
+    async fetchUsers({ commit,state }){
         console.log("[STORE ACTIONS] - fetchUsers:", );
+        console.log('start fetch', this.users, "users", state)
+        if(state.users[0].uid != "")return;
+        console.log('continue fetch')
          await firebase.firestore().collection('users').onSnapshot(docSnapshot => {
           console.log(`Received doc snapshot: ${docSnapshot.docs}`);
           docSnapshot.forEach(doc => {

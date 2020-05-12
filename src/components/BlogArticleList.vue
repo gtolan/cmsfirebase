@@ -1,6 +1,8 @@
 <template>
   <div>
     <!-- Add Controls -->
+
+    <!--- For better separation see - components/shared/ .. Contacts/Controls/List -->
     <div class="blog-controls">
       <button class="filter-a-z" @click="handleAZFilter" :class="{'active':this.toggleAZ}">
         <span class="md-screen">
@@ -42,9 +44,7 @@
       </div>
     </div>
 
-    <!-- Add Controls END -->
-    <!-- {{topArticles}}:TOP -->
-    <!--  -->
+    <!--- For better separation see - components/shared/ .. Contacts/Controls/List -->
     <section class="article-container">
       <article
         class="blog"
@@ -80,6 +80,7 @@
       </article>
     </section>
   </div>
+  <!--- For better separation see - components/shared/ .. Contacts/Controls/List -->
 </template>
 
 <script>
@@ -94,10 +95,6 @@ export default {
     hasArticles() {
       return this.$store.getters["pr/hasArticles"];
     },
-    // topArticles() {
-    //   return this.$store.getters["articles/topArticles"];
-    // }
-
     topArticlesList() {
       if (!this.topArticles) return;
       let filter =
@@ -114,12 +111,7 @@ export default {
       filterName: ""
     };
   },
-  //   watch: {
-  //     topArticles() {
-  //       console.log("watch update");
-  //       return this.$store.state;
-  //     }
-  //   },
+
   methods: {
     ...mapActions(["articles/fetchArticles"]), //-> this['articles/fetchArticles']()
     ...mapMutations(["articles/selectedArticle"]),

@@ -1,48 +1,8 @@
 <template>
-  <main>
-    <div class="profiler-wrapper">
-      <!-- <h1>Dashboard</h1> -->
+  <main class="dashboard">
+    <div class="profile-wrapper">
       <UserProfile />
-      <!-- <h1>Contacts</h1> -->
       <Contacts />
-      <!-- <button @click="handleLogout">Logout</button> -->
-      <!-- <div class="contact-controls">
-      <button class="filter-a-z" @click="handleAZFilter" :class="{'active':this.sortAZ}">
-        Sort A-Z
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-          <path
-            d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41L10.7 17.3c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"
-          />
-        </svg>
-      </button>
-      <button class="filter-a-z" @click="handleOnlineFilter">
-        Online Status
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-        >
-          <path
-            d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41L10.7 17.3c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"
-          />
-        </svg>
-      </button>
-      <div class="search-container">
-        <input type="text" v-model="searchUser" placeholder="search user..." />
-      </div>
-    </div>
-    <div class="user-container">
-      <div class="card" v-for="(user, ind) in usersList" :key="ind">
-        <img class="profile-image" :src="user.profileImage" alt="profile image" />
-        <p @click.self="handleOpenMailBox(user.id)">{{user.displayName}}</p>
-        <p
-          class="status"
-          :class="{'offline':usersList ? !user.online : ''}"
-        >{{user.online | isOnline}}</p>
-        <button class="send-message" @click.self="handleSendMessage(user.id)">Send Message</button>
-      </div>
-      </div>-->
       <LatestBlog />
       <router-link class="add-article" to="/add-blog-article">Add Blog Article</router-link>
     </div>
@@ -54,7 +14,7 @@
 import SendMessage from "@/components/SendMessage.vue";
 import LatestBlog from "@/components/LatestBlog.vue";
 import UserProfile from "@/components/UserProfile.vue";
-import Contacts from "@/components/shared/Contacts.vue";
+import Contacts from "@/components/shared/ContactsSection/Contacts.vue";
 export default {
   name: "Dashboard",
   components: {
@@ -62,118 +22,10 @@ export default {
     LatestBlog,
     UserProfile,
     Contacts
+  },
+  created() {
+    //console.log(this.$route.params);
   }
-  //   data() {
-  //     return {
-  //       fromUser: "",
-  //       searchUser: "",
-  //       sortAZ: false,
-  //       toggleOnline: false,
-  //       toggleAZ: false,
-  //       filterName: ""
-  //     };
-  //   },
-  //   filters: {
-  //     isOnline: function(value) {
-  //       return value == true ? "Online" : "Offline";
-  //     }
-  //   },
-
-  //   computed: {
-  //     ...mapState({
-  //       users: state => state.authentication.users,
-  //       uid: state => state.authentication.uid
-  //       //   b: state => state.b
-  //     }),
-  //     usersList() {
-  //       if (!this.users) return;
-  //       let filter = this.filterName != "" ? this[this.filterName]() : this.users;
-  //       console.log(filter, "filter");
-  //       return filter;
-  //     }
-  //   },
-  //   methods: {
-  //     ...mapActions(["authentication/fetchUsers", "authentication/logout"]),
-  //     ...mapMutations([
-  //       "messageUsers/writeFromUser",
-  //       "components/toggleSendMessage",
-  //       "authentication/setUSER"
-  //     ]),
-  //     handleLogout() {
-  //       console.log(this.uid, "logemout");
-  //       this["authentication/logout"](this.uid);
-  //     },
-  //     handleFetchUsers() {
-  //       this["authentication/fetchUsers"]();
-  //     },
-  //     handleSendMessage(uid) {
-  //       this.fromUser = uid;
-  //       this["messageUsers/writeFromUser"](uid);
-
-  //       this["components/toggleSendMessage"]();
-  //     },
-  //     handleOpenMailBox(id) {
-  //       this.$router.push(`/dashboard/${id}`);
-  //     },
-  //     filterStatus() {
-  //       console.log("filterStatus");
-  //       let { online, offline } = this.sortOfflineOnline();
-  //       let arr = this.toggleOnline
-  //         ? [...online, ...offline]
-  //         : [...offline, ...online];
-  //       return arr;
-  //     },
-  //     filterAZ() {
-  //       console.log("filterAZ");
-  //       let azUsers = this.sortAZUserNames();
-
-  //       return azUsers;
-  //     },
-  //     sortAZUserNames() {
-  //       console.log("start sort", this.users);
-  //       let az;
-  //       if (this.toggleAZ) {
-  //         az = this.users.sort((a, b) => {
-  //           console.log("started sorting", a, b);
-  //           return b.displayName.localeCompare(a.displayName);
-  //         });
-  //         console.log(az[0].displayName, az[2].displayName, "AZ");
-  //       } else {
-  //         az = this.users.sort((a, b) => {
-  //           console.log("started sorting2", a, b);
-  //           return a.displayName.localeCompare(b.displayName);
-  //         });
-  //         console.log(az[0].displayName, az[2].displayName, "ZA");
-  //       }
-
-  //       return az;
-  //     },
-  //     sortOfflineOnline() {
-  //       let online = [];
-  //       let offline = [];
-  //       console.log(this.users, "userss");
-  //       if (!this.users[0].online) return;
-  //       this.users.map(item => {
-  //         // console.log(item.online);
-  //         return item.online == true ? online.push(item) : offline.push(item);
-  //       });
-  //       //   console.log(online[0].online, offline[0].online, "after filter");
-  //       return { online, offline };
-  //     },
-  //     handleOnlineFilter() {
-  //       this.toggleAZ = false;
-  //       this.filterName = "filterStatus";
-  //       this.toggleOnline = !this.toggleOnline;
-  //     },
-  //     handleAZFilter() {
-  //       this.toggleOnline = false;
-  //       this.filterName = "filterAZ";
-  //       this.toggleAZ = !this.toggleAZ;
-  //     }
-  //   },
-  //   created() {
-  //     this.handleFetchUsers();
-  //   }
 };
 </script>
 
@@ -184,7 +36,7 @@ main {
   padding-bottom: 2rem;
   padding-top: 1rem;
 }
-.profiler-wrapper {
+.profile-wrapper {
   width: 95%;
   margin: auto;
   margin-top: 1rem;
@@ -195,7 +47,7 @@ main {
     0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
 @media only screen and (min-width: 500px) {
-  .profiler-wrapper {
+  .profile-wrapper {
     width: 90%;
   }
 }

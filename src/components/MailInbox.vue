@@ -108,6 +108,9 @@ export default {
       return (this[el] = !this[el]);
     }
   },
+  created() {
+    console.log("mailbox open");
+  },
   computed: {
     ...mapState({
       users: state => state.authentication.users

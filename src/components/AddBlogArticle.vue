@@ -3,8 +3,12 @@
     <h1 class="title">Share some Advice</h1>
     <form @submit.prevent="handleFormSubmit" v-if="!hideForm">
       <div class="upload-image">
+        <div class="use-image-url" :class="{'active':useURL}">
+          <button @click.self="toggleUseURL">URL</button>
+          <input type="text" v-model="imageURLText" />
+        </div>
         <!-- <p v-if="!image">Upload an image:</p> -->
-        <div v-if="!image" class="upload-btn">
+        <div v-if="!image" class="upload-btn" :class="{'active':!useURL}">
           Choose an Image
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -37,11 +41,11 @@
         <button @click="onUpload" :disabled="disableUpload">Upload</button>
       </div>
       <h4 v-if="uploadComplete == true" class="complete">Upload Complete!</h4>
-      <input type="date" placeholder="01-03-2020" v-model="date" />
-      <input placeholder="title" v-model="title" type="text" />
-      <input placeholder="summary" v-model="summary" type="text" />
+      <input name="date" type="date" placeholder="01-03-2020" v-model="date" />
+      <input name="title" placeholder="title" v-model="title" type="text" />
+      <input name="summary" placeholder="summary" v-model="summary" type="text" />
       <textarea rows="6" placeholder="content" v-model="content" type="text" />
-      <button>
+      <button type="submit">
         Submit
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M0 0h24v24H0V0z" fill="none" />
@@ -55,16 +59,11 @@
       <h1>Thank you for contributing!</h1>
       <h4>Your article has been shared!</h4>
       <p>Your help build community knowledge</p>
-      <button class="reset">Wrtie another Article</button>
+      <button class="reset">Write another Article</button>
     </div>
 
     <section class="article-container">
       <BlogArticleList />
-      <!-- <article class="blog" v-for="(art,ind) in collection2" :key="ind">
-        <h2>Title:{{art.title}}</h2>
-        <h2>Summary:{{art.summary}}</h2>
-        <h2>Content:{{art.content}}</h2>
-      </article>-->
     </section>
   </main>
 </template>
@@ -84,7 +83,8 @@ export default {
       summary: "",
       content: "",
       date: "",
-
+      imageURLText: "",
+      useURL: false,
       imageType: "",
       imageAddress: "",
       imageData: null,
@@ -110,14 +110,24 @@ export default {
         this["articles/fetchArticles"]();
       }
     },
+    toggleUseURL() {
+      this.useURL = !this.useURL;
+    },
     handleFormSubmit() {
       console.log(this.title, this.summary, this.content, "TSC");
+      if (((this.title && this.summary) || this.content) == "") return;
+
+      let chosenImage = this.image == "" ? this.imageURLText : this.image;
+      console.log(chosenImage, "chosenImage", this.userName, "this.userName");
       let pay = {
         title: this.title,
         summary: this.summary,
         date: this.date,
-        content: this.content
+        content: this.content,
+        imageURL: chosenImage,
+        author: "Gerard" //this.profile.displayName ||
       };
+      console.log(pay, "PAY");
       this["articles/writeNewArticle"](pay).then(() => {
         console.log("success message and reset form");
         this.hideForm = true;
@@ -209,9 +219,18 @@ export default {
   },
   computed: {
     ...mapState({
-      collection2: state => state.articles.topArticles
+      collection2: state => state.articles.topArticles,
+      uid: state => state.authentication.uid
       //   b: state => state.b
     }),
+    profile() {
+      if (!this.users) return;
+      let profile = this.users.find(user => user.uid == this.uid);
+      if (!profile) return;
+      console.log(profile, "profi");
+      return profile;
+    },
+
     hasArticles() {
       return this.$store.getters["articles/hasArticles"];
     }
@@ -277,6 +296,22 @@ form {
   textarea {
     padding-left: 10px;
     resize: none;
+  }
+}
+.use-image-url button {
+  width: 3rem;
+}
+.use-image-url input {
+  display: none;
+}
+.use-image-url.active {
+  display: flex;
+  justify-content: center;
+  input {
+    display: block;
+  }
+  button {
+    width: auto;
   }
 }
 

@@ -19,7 +19,7 @@
       <span class="md-screen">Dashboard</span>
     </router-link>
 
-    <router-link v-if="!loginNavbar" to="/login" title="login">
+    <router-link v-if="!loginNavbar" to="/login" title="login" data-cy="login">
       <span class="sm-screen">
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M0 0h24v24H0V0z" fill="none" />

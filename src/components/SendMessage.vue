@@ -2,11 +2,16 @@
   <div class="send-message">
     <Modal :isOpen="sendMessageModalOpen">
       <form @submit.prevent="handleFormSubmit">
-        <select v-model="toUser" @change="handleSelectChange($event)">
-          <option :value="rec.uid" v-for="(rec,ind) in recipients" :key="ind">{{rec.displayName}}</option>
-        </select>
-        <textarea v-model="message" />
-        <button type="submit">Send Message</button>
+        <div v-if="!messageSent" class="write-message">
+          <select v-model="toUserSelect" @change="handleSelectChange($event)">
+            <option :value="rec.uid" v-for="(rec,ind) in recipients" :key="ind">{{rec.displayName}}</option>
+          </select>
+          <textarea v-model="message" />
+          <button type="submit">Send Message</button>
+        </div>
+        <div v-if="messageSent" class="success">
+          <h1>Message Sent!</h1>
+        </div>
       </form>
     </Modal>
   </div>
@@ -26,12 +31,14 @@ export default {
       selectedRecipent: "",
       time: "01-01-2021",
       message: "",
-      toUser: ""
+      toUserSelect: "",
+      messageSent: false
     };
   },
   computed: {
     ...mapState({
       fromUser: state => state.messageUsers.fromUser,
+      toUser: state => state.messageUsers.toUser,
       recipients: state => {
         let messageSender = state.messageUsers.fromUser;
         console.log(messageSender, "messageSender");
@@ -46,19 +53,46 @@ export default {
       //   b: state => state.b
     })
   },
+
+  watch: {
+    // whenever question changes, this function will run
+    sendMessageModalOpen: function(prev, latest) {
+      if (prev) {
+        this.messageSent = latest; //false
+        console.log("resest the FORRRRM");
+      }
+    }
+  },
+  updated() {
+    console.log("updated to reset form");
+    //this.messageSent = false;
+  },
+  created() {
+    console.log("CREated to reset form");
+  },
   methods: {
     ...mapActions(["messageUsers/writeNewMessage"]),
     handleFormSubmit() {
       console.log(this.fromUser, "FROM");
       let { time, message, toUser, fromUser } = this;
+      let user;
+      if (this.toUserSelect != "") {
+        user = this.toUserSelect;
+      } else {
+        user = toUser;
+      }
+
       let pay = {
         time,
         message,
-        toUser,
+        toUser: user,
         fromUser
       };
       console.log(pay, "Pay after sub");
-      this["messageUsers/writeNewMessage"](pay);
+      this["messageUsers/writeNewMessage"](pay).then(() => {
+        console.log("message sent");
+        this.messageSent = true;
+      });
     },
     handleSelectChange(event) {
       console.log(event.target.value);
@@ -68,7 +102,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-form {
+form div.write-message {
   display: flex;
   flex-direction: column;
   padding: 1rem;

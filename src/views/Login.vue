@@ -1,5 +1,5 @@
 <template>
-  <main class="home">
+  <main class="login">
     <div class="login-container">
       <div class="tab-header">
         <button
@@ -46,7 +46,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.home {
+.login {
   img {
     width: 60px;
   }

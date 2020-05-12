@@ -5,18 +5,19 @@
         src="https://firebasestorage.googleapis.com/v0/b/cms-example-1e6fa.appspot.com/o/smile.jpg?alt=media&token=da6716a0-07a0-420d-b87c-3839489ffc0f"
       />
       <div class="profile-menu" :class="{'active':isActive}">
-        <button>My Profile</button>
-        <button>Edit Profile</button>
-        <button>Contacts</button>
-        <button>Messages</button>
-        <button>News Feed</button>
-        <button>Get Advice</button>
-        <button>Share Advice</button>
-        <button>Give Advice</button>
+        <button @click="myProfile">My Profile</button>
+        <button @click="editProfile">Edit Profile</button>
+        <button @click="contactLink">Contacts</button>
+        <button @click="messagesLink">Messages</button>
+        <button @click="newsLink">News Feed</button>
+        <button @click="getAdviceLink">Get Advice</button>
+        <button @click="shareAdviceLink">Share Advice</button>
+        <button @click="giveAdvice">Give Advice</button>
       </div>
     </div>
   </button>
 </template>
+
 
 <script>
 import { mapMutations, mapState } from "vuex";
@@ -56,6 +57,22 @@ export default {
       }
       this["components/addSoftOverlay"]();
     },
+    myProfile() {
+      this.$router.push("/dashboard");
+    },
+    editProfile() {
+      this.$router.push("/dashboard/editProfile");
+    },
+    contactLink() {
+      this.$router.push("/dashboard#contactCon");
+    },
+    messagesLink() {
+      this.$router.push("/dashboard#messages");
+    },
+    newsLink() {},
+    getAdviceLink() {},
+    shareAdviceLink() {},
+    giveAdvice() {},
     handleOverlayClose() {
       if (this.isOverlayActive) {
         console.log("HOC,BTP", this.blogMenuOpen, this.sideNavOpen);

@@ -1,9 +1,9 @@
 <template>
   <div class="tab">
     <h1>Login</h1>
-    <form @submit.prevent="handleLoginForm">
+    <form class="login-form" @submit.prevent="handleLoginForm">
       <label for="email">Email</label>
-      <input v-model="email" type="email" />
+      <input v-model="email" type="email" autocomplete="email" />
       <label for="password">Password</label>
       <input id="password" v-model="password" type="password" />
       <button type="submit">Login</button>
@@ -35,6 +35,7 @@ export default {
         .then(() => {
           console.log("finished handle Login");
           this.errorMsg = "You are logged in!";
+          this.$router.push("/dashboard");
         })
         .catch(err => {
           console.log(err, err.message);

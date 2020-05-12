@@ -11,7 +11,7 @@
         <div class="left">
           <h3>Name: {{profile ? profile.displayName : ''}}</h3>
           <!-- <h3>Email: {{profile ? profile.email : ''}}</h3> -->
-          <h3>Expertise: {{profile ? profile.displayName : ''}}</h3>
+          <h3>Expertise:</h3>
           <div class="chip-container">
             <div class="chip">Javascript</div>
             <div class="chip">Vuejs</div>
@@ -58,14 +58,13 @@ export default {
   },
   computed: {
     ...mapState({
-      users: state => state.authentication.users
+      users: state => state.authentication.users,
+      uid: state => state.authentication.uid
       //   b: state => state.b
     }),
     profile() {
       if (!this.users) return;
-      let profile = this.users.find(
-        user => user.uid == this.routeProfileParams
-      );
+      let profile = this.users.find(user => user.uid == this.uid);
       if (!profile) return;
       console.log(profile, "profi");
       return profile;

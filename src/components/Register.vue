@@ -1,14 +1,13 @@
 <template>
   <div>
     <h1>Register</h1>
-    <form @submit.prevent="handleFormSubmit">
+    <form class="register-form" @submit.prevent="handleFormSubmit">
       <label for="email">Email</label>
       <input id="email" placeholder="email" v-model="email" type="text" />
       <label for="displayName">Name</label>
       <input id="displayName" placeholder="Name" v-model="displayName" type="text" />
       <label for="password">Password</label>
       <input id="password" placeholder="Password" v-model="password" type="password" />
-
       <button type="submit">Submit</button>
     </form>
   </div>
